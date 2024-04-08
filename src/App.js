@@ -1,10 +1,12 @@
 import logo from './logo.svg';
 import Router from './Router';
-import './App.css';
+import Header from './Pages/Header';
 
 function App() {
   return (
     <>
+    
+      <Header />
       <Router />
     </>
   )

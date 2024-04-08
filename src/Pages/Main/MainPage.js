@@ -1,8 +1,10 @@
 // src/components/Blog.js
 import React, { useState, useEffect } from 'react';
+// import { NotionRenderer } from 'react-notion-x';
+
 import axios from 'axios';
-import BlogPost from './Components/BlogPost';
-import Pagination from './Components/Pagination';
+// import BlogPost from './Components/BlogPost';
+// import Pagination from './Components/Pagination';
 
 const MainPage = () => {
   const [posts, setPosts] = useState([]);
@@ -31,7 +33,8 @@ const MainPage = () => {
 
   return (
     <div className="container">
-      <h1>My Blog</h1>
+      <iframe src="https://www.notioniframe.com/notion/1fild49hmde" ></iframe>
+      {/* <h1>My Blog</h1>
       {loading ? (
         <h2>Loading...</h2>
       ) : (
@@ -45,7 +48,7 @@ const MainPage = () => {
             paginate={paginate}
           />
         </div>
-      )}
+      )} */}
     </div>
   );
 };
