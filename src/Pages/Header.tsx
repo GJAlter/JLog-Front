@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import styled from "styled-components";
 
 const HeaderDiv = styled.div`
@@ -34,14 +35,20 @@ const Divider = styled.hr`
 
 const Header = () => {
 
+    const [isSelected, setIsSelected] = useState("about");
+
+    const onLinkClick = (name: string) => {
+        setIsSelected(name)
+    }
+
     return(
         <div>
             <HeaderDiv>
                 <p id='user'>어서오세요 OOO님</p>
                 <LinkDiv>
-                    <p className='selected'>ABOUT</p>
-                    <p>POSTS</p>
-                    <p>DISCOVER</p>
+                    <Link to="/" onClick={() => onLinkClick("about")}><p className={isSelected == "about" ? "selected": ""}>ABOUT</p></Link>
+                    <Link to="/post" onClick={() => onLinkClick("post")}><p className={isSelected == "post" ? "selected": ""}>POSTS</p></Link>
+                    <Link to="/discover" onClick={() => onLinkClick("discover")}><p className={isSelected == "discover" ? "selected": ""}>DISCOVER</p></Link>
                 </LinkDiv>
             </HeaderDiv>
             <Divider />
