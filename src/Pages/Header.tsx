@@ -35,7 +35,7 @@ const Divider = styled.hr`
 const Header = () => {
 
     return(
-        <>
+        <div>
             <HeaderDiv>
                 <p id='user'>어서오세요 OOO님</p>
                 <LinkDiv>
@@ -45,8 +45,8 @@ const Header = () => {
                 </LinkDiv>
             </HeaderDiv>
             <Divider />
-        </>
-    )
+        </div>
+    );
 
 }
 
