@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from "styled-components";
+import { useNavigate } from 'react-router-dom';
 
 import 'react-notion/src/styles.css';
 import { NotionRenderer } from 'react-notion';
@@ -43,6 +44,7 @@ const MainPage = () => {
   `
 
   const [notionResponse, setNotionResponse] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getNotion = async () => {
@@ -53,6 +55,10 @@ const MainPage = () => {
     }
     getNotion();
   }, []);
+
+  useEffect(() => {
+    navigate("/login");
+  }, [])
 
   const onNotionClick = () => {
     window.open("https://axiomatic-sociology-ae7.notion.site/b72a5a41d2724c5aad2cc9d2886fe139", "_blank", "noopener, noreferrer")
