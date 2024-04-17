@@ -8,9 +8,37 @@ import { Posts } from '../../Models/Posts';
 import PostItem from './Components/PostItem';
 
 const PostPageBox = styled.div`
-  width: 100%;
   height: 100%;
-  padding-top: 82px;
+  padding-top: 21px;
+  padding-left: 125px;
+  padding-right: 125px;
+
+  div.new_post {
+    width: 135px;
+    height: 40px;
+    margin-left: auto;
+    margin-bottom: 21px;
+    border: 1px solid #C6C6C6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    
+    &:hover {
+      box-shadow: inset 1.5px 1.5px rgb(0, 0, 0, 0.2);
+    }
+
+    p {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    img {
+      width: 26px;
+      height: 26px;
+      margin-left: 5px;
+    }
+  }
 `
 
 const PostPage = () => {
@@ -30,6 +58,10 @@ const PostPage = () => {
 
   return (
     <PostPageBox>
+      <div className='new_post'>
+        <p className='new_post'>New Post</p>
+        <img src="imgs/edit.png" alt="new_post" />
+      </div>
       {posts.map(item => {
         return (
           <PostItem key={item.id} post={item}/>

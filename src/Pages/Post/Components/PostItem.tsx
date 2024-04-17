@@ -4,7 +4,6 @@ import { Posts } from '../../../Models/Posts';
 import { useNavigate } from 'react-router-dom';
 
 const PostBox = styled.div`
-    width: 85%;
     height: 170px;
     background-color: #F5F5F5;
     margin: auto;
