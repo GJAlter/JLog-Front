@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
 import { Posts } from '../../../Models/Posts';
+import { useNavigate } from 'react-router-dom';
 
 const PostBox = styled.div`
     width: 85%;
@@ -10,6 +11,11 @@ const PostBox = styled.div`
     margin-bottom: 50px;
     border-radius: 14px;
     padding: 25px;
+
+    &:hover {
+        box-shadow: 1.5px 1.5px rgb(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
 
     div.title_box {
         display: flex;
@@ -44,8 +50,14 @@ interface Props {
 
 const PostItem = ({ post }: Props) => {
 
+    const navigate = useNavigate();
+
+    const onItemClick = (id: string) => {
+        navigate(`/post/${id}`)
+    }
+
     return(
-        <PostBox id={post.id}>
+        <PostBox id={post.id} onClick={() => onItemClick(post.id)}>
             <div className='title_box'>
                 <p className='title'>{post.title}</p>
                 <p className='modified_date'>{post.modifiedDatetime.toString().split("T")[0]}</p>

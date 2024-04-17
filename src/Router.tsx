@@ -5,6 +5,7 @@ import PostPage from './Pages/Post/PostPage';
 import Header from './Pages/Header';
 import Template from './Template';
 import LoginPage from './Pages/Login/LoginPage';
+import PostDetailPage from './Pages/Post/PostDetailPage';
 
 
 
@@ -17,6 +18,7 @@ const Router = () => {
                 <Route element={<Template />}>
                     <Route path="/" element={<MainPage />} />
                     <Route path="/post" element={<PostPage />} />
+                    <Route path="/post/:id" element={<PostDetailPage />} />
                 </Route>
             </Routes>
         </HashRouter>
