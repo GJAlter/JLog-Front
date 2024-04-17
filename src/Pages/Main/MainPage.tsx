@@ -6,42 +6,42 @@ import { useNavigate } from 'react-router-dom';
 
 import 'react-notion/src/styles.css';
 import { NotionRenderer } from 'react-notion';
+import { ResType } from '../../Models/ResType';
 
+const NotionItemDiv = styled.div`
+  margin: auto;
+  margin-top: 30px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  width: max-content;
+  border: 1px solid #C1C1C1;
+  border-radius: 7px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #C1C1C1;
+  }
+
+  img {
+    width: 48px;
+    heigth: 48px;
+  }
+  
+  p {
+    margin-left: 15px;
+    font-size: 25px;
+    font-weight: 600;
+  }
+`;
+
+const NotionDiv = styled.div`
+  .notion-page {
+    margin-top: 0;
+  }
+`
 
 const MainPage = () => {
-
-  const NotionItemDiv = styled.div`
-    margin: auto;
-    margin-top: 30px;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    width: max-content;
-    border: 1px solid #C1C1C1;
-    border-radius: 7px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #C1C1C1;
-    }
-
-    img {
-      width: 48px;
-      heigth: 48px;
-    }
-    
-    p {
-      margin-left: 15px;
-      font-size: 25px;
-      font-weight: 600;
-    }
-  `;
-
-  const NotionDiv = styled.div`
-    .notion-page {
-      margin-top: 0;
-    }
-  `
 
   const [notionResponse, setNotionResponse] = useState({});
   const navigate = useNavigate();
@@ -57,7 +57,12 @@ const MainPage = () => {
   }, []);
 
   useEffect(() => {
-    navigate("/login");
+    axios.get("/api/check").then(res => {
+      const result = ResType.fromJson(res.data)
+      if(result.statusCode != 200) {
+        navigate("/login");
+      }
+    });
   }, [])
 
   const onNotionClick = () => {

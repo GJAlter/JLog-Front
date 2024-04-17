@@ -1,39 +1,92 @@
-import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import React, { useState, useEffect, ChangeEvent, KeyboardEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
+import { ResType } from '../../Models/ResType';
 
+const LoginDiv = styled.div`
+    width: 500px;
+    height: 500px;
+    margin: auto;
+    align-content: center;
+    padding: 10px;
+    
+    p {
+        font-size: 25px;
+        margin-bottom: 20px;
+    }
+    
+    div.input_box {
+        width: 100%;
+        height: 40px;
+        text-align: center;
+
+        input {
+            padding-right: 0px;
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    div.button_box {
+        display:flex;
+        justify-content: end;
+    }
+`;
 
 const LoginPage = () => {
 
-    const LoginDiv = styled.div`
-        width: 500px;
-        height: 500px;
-        border: 1px solid #000;
-        margin: auto;
-        align-content: center;
-        
-        p {
-            font-size: 25px;
-            margin-bottom: 20px;
+    const navigate = useNavigate();
+
+    const [loginValue, setLoginValue] = useState<{[key: string]: string}>({
+        userId: "",
+        password: ""
+    });
+
+    
+
+    const onIdChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setLoginValue(loginValue => ({...loginValue, userId: e.target.value}))
+    }
+
+    const onPwChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setLoginValue(loginValue => ({...loginValue, password: e.target.value}))
+    }
+
+    const onLoginClick = () => {
+        const formData = new FormData();
+        Object.keys(loginValue).forEach(key => formData.append(key, loginValue[key]));
+        axios.post("/api/login", formData).then(res => {
+            const result = ResType.fromJson(res.data)
+            if(result.statusCode == 200) {
+                navigate("/")
+            } else {
+                alert(result.result);
+            }
+        })
+    };
+
+    const onInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if(e.code == "Enter") {
+            onLoginClick();
         }
-        
-        input[type=text] {
-            width: 95%;
-            height: 40px;
-            margin: auto;
-            margin-bottom: 10px;
-        }
-    `;
+    }
 
 
     return (
         <LoginDiv>
             <p>Jlog에 오신것을 환영합니다.</p>
-            <input type='text' placeholder='ID' />
+            <div className='input_box'>
+                <input type='text' value={loginValue.userId} onChange={onIdChange} onKeyDown={onInputKeyDown} placeholder='ID' />
+            </div>
             <br />
-            <input type='text' placeholder='PW' />
+            <div className='input_box'>
+                <input type='password' value={loginValue.password} onChange={onPwChange} onKeyDown={onInputKeyDown} placeholder='PW' />
+            </div>
             <br />
-            <input type='button' value={"Login"}/>
-            
+            <div className='button_box'>
+                <input type='button' onClick={onLoginClick} value={"Login"}/>
+            </div>
         </LoginDiv>
     )
 }
