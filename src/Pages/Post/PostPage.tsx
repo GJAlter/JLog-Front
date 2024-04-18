@@ -6,6 +6,7 @@ import { ResType } from '../../Models/ResType';
 import { Page } from '../../Models/Page';
 import { Posts } from '../../Models/Posts';
 import PostItem from './Components/PostItem';
+import { useNavigate } from 'react-router-dom';
 
 const PostPageBox = styled.div`
   height: 100%;
@@ -43,6 +44,8 @@ const PostPageBox = styled.div`
 
 const PostPage = () => {
 
+  const navigate = useNavigate();
+
   const [posts, setPosts] = useState<Array<Posts>>([]);
 
   useEffect(() => {
@@ -56,9 +59,13 @@ const PostPage = () => {
     })
   }, []);
 
+  const onNewPostClick = () => {
+    navigate("/post/new");
+  }
+
   return (
     <PostPageBox>
-      <div className='new_post'>
+      <div className='new_post' onClick={onNewPostClick}>
         <p className='new_post'>New Post</p>
         <img src="imgs/edit.png" alt="new_post" />
       </div>
