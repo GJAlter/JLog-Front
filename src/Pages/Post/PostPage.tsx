@@ -7,6 +7,7 @@ import { Page } from '../../Models/Page';
 import { Posts } from '../../Models/Posts';
 import PostItem from './Components/PostItem';
 import { useNavigate } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
 
 const PostPageBox = styled.div`
   height: 100%;
@@ -40,6 +41,34 @@ const PostPageBox = styled.div`
       margin-left: 5px;
     }
   }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+
+    li {
+      list-style: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    li.selected {
+      font-weight: 700;
+    }
+
+    a {
+      -ms-user-select: none;
+      -moz-user-select: -moz-none;
+      -khtml-user-select: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    a:hover {
+      color: #939393;
+    }
+    
+  }
 `
 
 const PostPage = () => {
@@ -47,20 +76,36 @@ const PostPage = () => {
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState<Array<Posts>>([]);
+  const [totalPage, setTotalPage] = useState(1);
+
+  const getPosts = async (page: number): Promise<Page | undefined> => {
+    const res = await axios.get(`/api/posts/my?p=${page}`);
+    const result = ResType.fromJson(res.data);
+    if(result.statusCode == 200) {
+      return Page.fromJson(result.result);
+    }
+    return undefined;
+  }
 
   useEffect(() => {
-    axios.get("/api/posts/my").then(res => {
-      const result = ResType.fromJson(res.data);
-      if(result.statusCode == 200) {
-        const page = Page.fromJson(result.result);
-
+    getPosts(1).then(page => {
+      if(page != undefined) {
         setPosts(page.data.map(item => Posts.fromJson(item)));
+        setTotalPage(page.totalPage);
       }
-    })
+    });
   }, []);
 
   const onNewPostClick = () => {
     navigate("/post/new");
+  }
+
+  const onPageChange = (page: {selected: number}) => {
+    getPosts(page.selected + 1).then(page => {
+      if(page != undefined) {
+        setPosts(page.data.map(item => Posts.fromJson(item)));
+      }
+    });
   }
 
   return (
@@ -74,6 +119,14 @@ const PostPage = () => {
           <PostItem key={item.id} post={item}/>
       )
       })}
+      <ReactPaginate breakLabel="..."
+        nextLabel=">"
+        onPageChange={onPageChange}
+        pageRangeDisplayed={5}
+        pageCount={totalPage}
+        previousLabel="<"
+        className="pagination"
+        renderOnZeroPageCount={null} />
     </PostPageBox>
   );
 };

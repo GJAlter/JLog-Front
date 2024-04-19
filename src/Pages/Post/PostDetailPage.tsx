@@ -73,6 +73,8 @@ const PostBox = styled.div`
 
     p.content {
         margin-top: 33px;
+        white-space: normal;
+        word-wrap: break-word;
     }
 `
 
