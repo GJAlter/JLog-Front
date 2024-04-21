@@ -1,9 +1,9 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { ResType } from '../Models/ResType';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { ResType } from "../Models/ResType";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const HeaderDiv = styled.div`
     height: 113px;
@@ -25,7 +25,6 @@ const HeaderDiv = styled.div`
             margin-bottom: 2px;
             cursor: pointer;
         }
-        
     }
 `;
 
@@ -48,37 +47,36 @@ const Divider = styled.hr`
 `;
 
 const Header = () => {
-
     const navigate = useNavigate();
     const location = useLocation();
 
     const [isSelected, setIsSelected] = useState("about");
-    const [user, setUser] = useState("_")
+    const [user, setUser] = useState("_");
     const [timer, setTimer] = useState(0);
 
     const checkUser = async () => {
         const res = await axios.get("/api/check");
         const result = ResType.fromJson(res.data);
-        if(result.statusCode != 200) {
+        if (result.statusCode != 200) {
             navigate("/login");
             return;
         }
-        if(user != result.result) {
+        if (user != result.result) {
             setUser(result.result);
         }
-        if(timer > 100) {
-            setTimer(0)
+        if (timer > 100) {
+            setTimer(0);
         } else {
             setTimer(timer + 1);
         }
-    }
+    };
 
     useEffect(() => {
         checkUser();
-        if(location.pathname.match(/(^\/post|^\/post.*)/g)) {
+        if (location.pathname.match(/(^\/post|^\/post.*)/g)) {
             setIsSelected("post");
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
         const loopCheck = setTimeout(async () => {
@@ -88,32 +86,35 @@ const Header = () => {
     }, [timer]);
 
     const onLinkClick = (name: string) => {
-        setIsSelected(name)
-    }
+        setIsSelected(name);
+    };
 
     const onLogoutClick = () => {
-        axios.post("/api/logout").then(_ => {
+        axios.post("/api/logout").then((_) => {
             navigate("/login");
-        })
-    }
+        });
+    };
 
-    return(
+    return (
         <div>
             <HeaderDiv>
-                <div className='user'>
-                    <p id='user'>어서오세요 {user}님</p>
-                    <img src="/imgs/logout.svg" alt='logout' onClick={onLogoutClick} />
+                <div className="user">
+                    <p id="user">어서오세요 {user}님</p>
+                    <img src="/imgs/logout.svg" alt="logout" onClick={onLogoutClick} />
                 </div>
                 <LinkDiv>
-                    <Link to="/" onClick={() => onLinkClick("about")}><p className={isSelected == "about" ? "selected": ""}>ABOUT</p></Link>
-                    <Link to="/post" onClick={() => onLinkClick("post")}><p className={isSelected == "post" ? "selected": ""}>POSTS</p></Link>
-                    <Link to="/discover" onClick={() => onLinkClick("discover")}><p className={isSelected == "discover" ? "selected": ""}>DISCOVER</p></Link>
+                    <Link to="/" onClick={() => onLinkClick("about")}>
+                        <p className={isSelected == "about" ? "selected" : ""}>ABOUT</p>
+                    </Link>
+                    <Link to="/post" onClick={() => onLinkClick("post")}>
+                        <p className={isSelected == "post" ? "selected" : ""}>POSTS</p>
+                    </Link>
+                    {/* <Link to="/discover" onClick={() => onLinkClick("discover")}><p className={isSelected == "discover" ? "selected": ""}>DISCOVER</p></Link> */}
                 </LinkDiv>
             </HeaderDiv>
             <Divider />
         </div>
     );
-
-}
+};
 
 export default Header;
