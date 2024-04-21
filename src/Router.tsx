@@ -21,6 +21,7 @@ const Router = () => {
                     <Route path="/post" element={<PostPage />} />
                     <Route path="/post/:id" element={<PostDetailPage />} />
                     <Route path="/post/new" element={<PostEditPage />} />
+                    <Route path="/post/edit" element={<PostEditPage />} />
                 </Route>
             </Routes>
         </HashRouter>

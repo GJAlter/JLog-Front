@@ -6,7 +6,8 @@ import styled from "styled-components";
 import { Post } from "../../Models/Post";
 import Modal from "../../Common/Modal";
 import ProgressBar from "@ramonak/react-progress-bar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getFileName } from "../../Common/Util";
 
 const PostBox = styled.div`
     height: 100%;
@@ -109,6 +110,7 @@ const PostBox = styled.div`
         display: flex;
         justify-content: right;
         margin-top: 15px;
+        margin-bottom: 50px;
 
         div.save {
             width: 81px;
@@ -159,23 +161,47 @@ const ProgressStyle = styled.div`
 const PostEditPage = () => {
 
     const navigate = useNavigate();
-    
+    const location = useLocation();
+
+    const post: Post = location.state?.post;
     const fileRef = useRef<HTMLInputElement>(null);
+
+    const [defaultFiles, setDefaultFiles] = useState<Array<string>>([]);
     const [files, setFiles] = useState<Array<File>>([]);
+    const [deleteFiles, setDeleteFiles] = useState<Array<string>>([]);
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [progress, setProgress] = useState(0);
     const [isUploading, setUploading] = useState(false);
+
+    useEffect(() => {
+        if(post != undefined) {
+            setTitle(post.title);
+            setContent(post.content);
+            setDefaultFiles(post.attaches ?? []);
+        }
+    }, [post]);
 
     const onUploadClick = () => {
         fileRef.current?.click();
     }
 
     const onUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if(defaultFiles.length + files.length > 2 || defaultFiles.length + e.target.files!!.length > 3) {
+            alert("파일은 최대 3개까지 업로드 가능합니다.");
+            return;
+        }
         setFiles(files.concat(Array.from(e.target.files!!)))
     }
 
+    const onDefaultFileClick = (fileName: string) => {
+        setDefaultFiles(defaultFiles.filter(file => file != fileName));
+    }
+
     const onFileClick = (fileName: string) => {
+        if(defaultFiles.indexOf(fileName) > -1) {
+            setDeleteFiles([...deleteFiles, fileName]);
+        } 
         setFiles(files.filter(file => file.name != fileName));
     }
 
@@ -192,7 +218,6 @@ const PostEditPage = () => {
         if(e.total != undefined) {
             const percent = Math.round(e.loaded / e.total * 100);
             setProgress(percent)
-            console.log(percent);
         }
     }
 
@@ -206,32 +231,47 @@ const PostEditPage = () => {
             "title": title,
             "content": content,
         };
+
+
         if(files.length > 0) {
             const formData = new FormData();
-            files.forEach(file => formData.append("file", file))
+            files.forEach(file => formData.append("file", file));
 
             const fileReq = await axios.post("/api/posts/file", formData, {headers: {"Content-Type": "multipart/form-data"}, onUploadProgress: onUploadingProgress});
             const result = ResType.fromJson(fileReq.data);
             data["attaches"] = result.result;
-            // const fileRes = ResType.fromJson((await axios.post("/api/posts/file", formData, {headers: {"Content-Type": "multipart/form-data"}})).data);
-            // fileNames = fileRes.result;
         }
 
-        axios.post("/api/posts", JSON.stringify(data), {headers: {"Content-Type": "application/json"}}).then(res => {
+        const sendReq = async (): Promise<ResType> => {
+            if(post != undefined) {
+                if(deleteFiles.length > 0) {
+                    await axios.delete(`/api/posts/${post.id}/file`, {data: JSON.stringify(defaultFiles), headers: {"Content-Type": "application/json"}});
+                }
+                const newFiles = defaultFiles.filter(file => deleteFiles.indexOf(file) == -1)
+                console.log(defaultFiles);
+                if(data["attaches"] == null) {
+                    data["attaches"] = newFiles;
+                } else {
+                    data["attaches"] = [...newFiles, ...data["attaches"]];
+                }
+                console.log(data["attaches"]);
+                return ResType.fromJson((await axios.patch(`/api/posts/${post.id}`, JSON.stringify(data), {headers: {"Content-Type": "application/json"}})).data);
+            }
+            return ResType.fromJson((await axios.post("/api/posts", JSON.stringify(data), {headers: {"Content-Type": "application/json"}})).data);
+        }
+
+        sendReq().then(result => {
             setUploading(false);
-            const result = ResType.fromJson(res.data);
             navigate(`/post/${result.result}`)
         });
-        
-        
-        
+
     }
     
     return(
         <div>
             <PostBox>
                 <div className="title_box">
-                    <input className="title" type="text" placeholder="제목" onChange={onTitleChange} />
+                    <input className="title" type="text" placeholder="제목" onChange={onTitleChange} value={title} />
                 </div>
                 <Divider />
                 <div className="attach_box">
@@ -239,8 +279,11 @@ const PostEditPage = () => {
                         <div className="box2">
                             <img src="imgs/attach.png" alt="attach" />
                             <div className="file_list">
+                                {defaultFiles?.map((file => {
+                                    return <p className="file" key={file} onClick={() => onDefaultFileClick(file)}>{getFileName(file)}</p>
+                                }))}
                                 {files.map((file => {
-                                    return <p className="file" key={file.name} onClick={() => onFileClick(file.name)}>{file.name}</p>
+                                    return <p className="file" key={file.name} onClick={() => onFileClick(file.name)}>{getFileName(file.name)}</p>
                                 }))}
                             </div>
                         </div>
@@ -253,7 +296,7 @@ const PostEditPage = () => {
                     </div>
                 </div>
                 <div className="content">
-                    <textarea className="content" placeholder="내용" onChange={onContentChange} />
+                    <textarea className="content" placeholder="내용" onChange={onContentChange} value={content} />
                 </div>
                 <div className="save_box">
                     <div className="save" onClick={onSaveClick}>

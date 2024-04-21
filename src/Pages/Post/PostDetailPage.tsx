@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ResType } from "../../Models/ResType";
 import styled from "styled-components";
 import { Post } from "../../Models/Post";
+import { getFileName } from "../../Common/Util";
 
 const PostBox = styled.div`
     // width: 100%;
@@ -86,22 +87,26 @@ const Divider = styled.hr`
 const PostDetailPage = () => {
 
     const { id } = useParams();
+    const navigate = useNavigate();
     const [post, setPost] = useState<Post>();
 
     useEffect(() => {
         axios.get(`/api/posts/${id}`).then(res => {
             const result = ResType.fromJson(res.data);
-            console.log(result);
             setPost(Post.fromJson(result.result));
         })
     }, []);
+
+    const onEditClick = () => {
+        navigate("/post/edit", {state: {post: post}});
+    }
     
     return(
         <PostBox>
             <div className="title_box">
                 <div className="left">
                     <p className="title">{post?.title}</p>
-                    <img src="imgs/edit.png" alt="edit_post" />
+                    <img src="imgs/edit.png" alt="edit_post" onClick={onEditClick} />
                 </div>
                 <p className="modified_date">{post?.modifiedDatetime.toString().split("T")[0]}</p>
             </div>
@@ -111,7 +116,7 @@ const PostDetailPage = () => {
                     <img src="imgs/attach.png" alt="attach" />
                     <div className="file_list">
                         {post.attaches?.map((attach => {
-                            return <p className="file">{attach}</p>
+                            return <p className="file" key={attach}>{getFileName(attach)}</p>
                         }))}
                     </div>
                 </div>
