@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from "styled-components";
 import { ResType } from '../Models/ResType';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const HeaderDiv = styled.div`
     height: 113px;
@@ -39,6 +39,7 @@ const Divider = styled.hr`
 const Header = () => {
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [isSelected, setIsSelected] = useState("about");
     const [user, setUser] = useState("_")
@@ -63,6 +64,9 @@ const Header = () => {
 
     useEffect(() => {
         checkUser();
+        if(location.pathname.match(/(^\/post|^\/post.*)/g)) {
+            setIsSelected("post");
+        }
     }, [])
 
     useEffect(() => {
