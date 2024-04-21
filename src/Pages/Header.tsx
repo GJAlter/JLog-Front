@@ -11,10 +11,21 @@ const HeaderDiv = styled.div`
     display: flex;
     justify-content: space-between;
 
-    p#user {
-        margin-left: 50px;
-        font-size: 20px;
-        align-content: end;
+    div.user {
+        display: flex;
+        align-items: end;
+        p#user {
+            margin-left: 50px;
+            font-size: 20px;
+        }
+        img {
+            width: 18px;
+            height: 18px;
+            margin-left: 10px;
+            margin-bottom: 2px;
+            cursor: pointer;
+        }
+        
     }
 `;
 
@@ -80,10 +91,19 @@ const Header = () => {
         setIsSelected(name)
     }
 
+    const onLogoutClick = () => {
+        axios.post("/api/logout").then(_ => {
+            navigate("/login");
+        })
+    }
+
     return(
         <div>
             <HeaderDiv>
-                <p id='user'>어서오세요 {user}님</p>
+                <div className='user'>
+                    <p id='user'>어서오세요 {user}님</p>
+                    <img src="/imgs/logout.svg" alt='logout' onClick={onLogoutClick} />
+                </div>
                 <LinkDiv>
                     <Link to="/" onClick={() => onLinkClick("about")}><p className={isSelected == "about" ? "selected": ""}>ABOUT</p></Link>
                     <Link to="/post" onClick={() => onLinkClick("post")}><p className={isSelected == "post" ? "selected": ""}>POSTS</p></Link>
