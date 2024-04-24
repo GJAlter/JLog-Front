@@ -111,7 +111,6 @@ const LoginPage = () => {
                 </div>
                 <input type="button" onClick={onLoginClick} value={"로그인"} />
             </div>
-            <img src={`${process.env.PUBLIC_URL}/imgs/logout.svg`} alt="logout" />
         </LoginDiv>
     );
 };
