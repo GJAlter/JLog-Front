@@ -100,7 +100,7 @@ const Header = () => {
             <HeaderDiv>
                 <div className="user">
                     <p id="user">어서오세요 {user}님</p>
-                    <img src="/imgs/logout.svg" alt="logout" onClick={onLogoutClick} />
+                    <img src={`${process.env.PUBLIC_URL}/imgs/logout.svg`} alt="logout" onClick={onLogoutClick} />
                 </div>
                 <LinkDiv>
                     <Link to="/" onClick={() => onLinkClick("about")}>

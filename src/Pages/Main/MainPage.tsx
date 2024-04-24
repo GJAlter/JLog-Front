@@ -72,7 +72,7 @@ const MainPage = () => {
     return (
         <div>
             <NotionItemDiv onClick={onNotionClick}>
-                <img src={"/imgs/notion.png"} alt="notion_link" />
+                <img src={`${process.env.PUBLIC_URL}/imgs/notion.png`} alt="notion_link" />
                 <p>Notion</p>
             </NotionItemDiv>
             {

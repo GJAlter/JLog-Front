@@ -63,8 +63,8 @@ module.exports = (env, argv) => {
                 process: "process/browser.js",
             }),
             new HtmlWebpackPlugin({
-                template: process.env.NODE_ENV === "production" ? "./index.html" : "./public/index.html",
-                // template: "./index.html",
+                // template: process.env.NODE_ENV === "production" ? "./index.html" : "./public/index.html",
+                template: "./public/index.html",
                 minify:
                     process.env.NODE_ENV === "production"
                         ? {
@@ -73,7 +73,10 @@ module.exports = (env, argv) => {
                           }
                         : false,
             }),
-            new CleanWebpackPlugin(),
+            new webpack.DefinePlugin({
+                "process.env.PUBLIC_URL": prod === "production" ? JSON.stringify("/public") : JSON.stringify(""),
+            }),
+            // new CleanWebpackPlugin(),
         ],
     };
 };
