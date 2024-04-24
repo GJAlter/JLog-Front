@@ -63,7 +63,8 @@ module.exports = (env, argv) => {
                 process: "process/browser.js",
             }),
             new HtmlWebpackPlugin({
-                template: "./public/index.html",
+                template: process.env.NODE_ENV === "production" ? "./index.html" : "./public/index.html",
+                // template: "./index.html",
                 minify:
                     process.env.NODE_ENV === "production"
                         ? {
