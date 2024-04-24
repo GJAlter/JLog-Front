@@ -105,14 +105,14 @@ const PostDetailPage = () => {
             <div className="title_box">
                 <div className="left">
                     <p className="title">{post?.title}</p>
-                    <img src="imgs/edit.png" alt="edit_post" onClick={onEditClick} />
+                    <img src={`${process.env.PUBLIC_URL}/imgs/edit.png`} alt="edit_post" onClick={onEditClick} />
                 </div>
                 <p className="modified_date">{post?.modifiedDatetime.toString().split("T")[0]}</p>
             </div>
             <Divider />
             {post?.attaches != null && (
                 <div className="attach_box">
-                    <img src="imgs/attach.png" alt="attach" />
+                    <img src={`${process.env.PUBLIC_URL}/imgs/attach.png`} alt="attach" />
                     <div className="file_list">
                         {post.attaches?.map((attach) => {
                             return (
