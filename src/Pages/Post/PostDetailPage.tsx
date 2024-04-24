@@ -15,7 +15,7 @@ const PostBox = styled.div`
     padding-right: 150px;
 
     div.title_box {
-        display:flex;
+        display: flex;
         align-items: center;
         justify-content: space-between;
 
@@ -49,7 +49,7 @@ const PostBox = styled.div`
         display: flex;
         align-items: center;
         margin-top: 6px;
-        
+
         img {
             width: 18px;
             height: 18px;
@@ -77,7 +77,7 @@ const PostBox = styled.div`
         white-space: normal;
         word-wrap: break-word;
     }
-`
+`;
 
 const Divider = styled.hr`
     width: 100%;
@@ -85,23 +85,22 @@ const Divider = styled.hr`
 `;
 
 const PostDetailPage = () => {
-
     const { id } = useParams();
     const navigate = useNavigate();
     const [post, setPost] = useState<Post>();
 
     useEffect(() => {
-        axios.get(`/api/posts/${id}`).then(res => {
+        axios.get(`/api/posts/${id}`).then((res) => {
             const result = ResType.fromJson(res.data);
             setPost(Post.fromJson(result.result));
-        })
+        });
     }, []);
 
     const onEditClick = () => {
-        navigate("/post/edit", {state: {post: post}});
-    }
-    
-    return(
+        navigate("/post/edit", { state: { post: post } });
+    };
+
+    return (
         <PostBox>
             <div className="title_box">
                 <div className="left">
@@ -111,19 +110,25 @@ const PostDetailPage = () => {
                 <p className="modified_date">{post?.modifiedDatetime.toString().split("T")[0]}</p>
             </div>
             <Divider />
-            {post?.attaches != null && 
+            {post?.attaches != null && (
                 <div className="attach_box">
                     <img src="imgs/attach.png" alt="attach" />
                     <div className="file_list">
-                        {post.attaches?.map((attach => {
-                            return <p className="file" key={attach}>{getFileName(attach)}</p>
-                        }))}
+                        {post.attaches?.map((attach) => {
+                            return (
+                                <a href={`/file/${attach}`} download>
+                                    <p className="file" key={attach}>
+                                        {getFileName(attach)}
+                                    </p>
+                                </a>
+                            );
+                        })}
                     </div>
                 </div>
-            }
+            )}
             <p className="content">{post?.content}</p>
         </PostBox>
-    )
-}
+    );
+};
 
 export default PostDetailPage;
