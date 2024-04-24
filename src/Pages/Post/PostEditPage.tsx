@@ -269,7 +269,7 @@ const PostEditPage = () => {
                 <div className="attach_box">
                     <div className="box1">
                         <div className="box2">
-                            <img src="imgs/attach.png" alt="attach" />
+                            <img src={`${process.env.PUBLIC_URL}/imgs/attach.png`} alt="attach" />
                             <div className="file_list">
                                 {defaultFiles?.map((file) => {
                                     return (
