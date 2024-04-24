@@ -74,7 +74,7 @@ module.exports = (env, argv) => {
                         : false,
             }),
             new webpack.DefinePlugin({
-                "process.env.PUBLIC_URL": prod === "production" ? JSON.stringify("/public") : JSON.stringify(""),
+                "process.env.PUBLIC_URL": argv.mode === "production" ? JSON.stringify("/public") : JSON.stringify(""),
             }),
             // new CleanWebpackPlugin(),
         ],
