@@ -9,7 +9,7 @@ const Modal = styled.div<ModalProps>`
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.33);
-    position: absolute;
+    position: fixed;
     display: flex;
     top: 0;
 
